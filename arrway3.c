@@ -1,28 +1,33 @@
 #include <stdio.h>
 
-// Hàm t?m ki?m tuy?n tính
-int linearSearch(int arr[], int n, int x) {
-    for (int i = 0; i < n; i++) {
-        if (arr[i] == x) {
-            return i; // Tr? v? v? trí n?u t?m th?y
-        }
-    }
-    return -1; // Tr? v? -1 n?u không t?m th?y
-}
+#define MAX_STUDENTS 50 
 
 int main() {
-    int arr[] = {2, 5, 7, 12, 18, 20, 24};
-    int n = sizeof(arr) / sizeof(arr[0]);
-    int x = 18; // Giá tr? c?n t?m
+    int numStudents, i;
+    float marks[MAX_STUDENTS], sum = 0.0, average;
 
-    int result = linearSearch(arr, n, x);
+    printf("Nhap so luong sinh vien trong lop: ");
+    scanf("%d", &numStudents);
 
-    if (result == -1) {
-        printf("Khong tim thay %d trong mang.\n", x);
-    } else {
-        printf("Tim thay %d tai vi tri %d trong mang.\n", x, result);
+    if (numStudents <= 0 || numStudents > MAX_STUDENTS) {
+        printf("So luong sinh vien khong hop le.\n");
+        return 1;
     }
+
+    
+    for (i = 0; i < numStudents; i++) {
+        printf("Nhap diem cua sinh vien %d: ", i + 1);
+        scanf("%f", &marks[i]);
+
+        
+        sum += marks[i];
+    }
+
+    
+    average = sum / numStudents;
+
+    
+    printf("Diem trung binh cua lop la: %.2f\n", average);
 
     return 0;
 }
-
