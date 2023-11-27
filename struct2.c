@@ -1,124 +1,119 @@
 #include <stdio.h>
-#define MAX_EMPLOYEES 100
+#include <string.h>
 
-struct Employee {
-    int employeeID;
-    char name[50];
-    char position[50];
-    int salary;
+#define MAX_STUDENTS 50
+#define MAX_NAME_LENGTH 50
+
+
+struct Student {
+    int id;
+    char name[MAX_NAME_LENGTH];
+    float score;
 };
 
-struct Employee employees[MAX_EMPLOYEES];
-int numEmployees = 0;
 
-void addEmployee() {
-    if (numEmployees == MAX_EMPLOYEES) {
-        printf("Khong the them nhan vien. Da dat gioi han.\n");
-        return;
-    }
-    
-    struct Employee newEmployee;
-    
-    printf("Nhap ma nhan vien: ");
-    scanf("%d", &newEmployee.employeeID);
-    printf("Nhap ten nhan vien: ");
-    scanf("%s", newEmployee.name);
-    printf("Nhap chuc vu: ");
-    scanf("%s", newEmployee.position);
-    printf("Nhap luong: ");
-    scanf("%d", &newEmployee.salary);
-    
-    employees[numEmployees++] = newEmployee;
-    
-    printf("Da them nhan vien thanh cong.\n");
-}
+void sortStudentsByName(struct Student students[], int numStudents) {
+    int i, j;
+    struct Student temp;
 
-void removeEmployee() {
-    int employeeID;
-    int employeeIndex = -1;
-    
-    printf("Nhap ma nhan vien can xoa: ");
-    scanf("%d", &employeeID);
-    
-    for (int i = 0; i < numEmployees; i++) {
-        if (employees[i].employeeID == employeeID) {
-            employeeIndex = i;
-            break;
-        }
-    }
-    
-    if (employeeIndex == -1) {
-        printf("Khong tim thay nhan vien co ma %d.\n", employeeID);
-    } else {
-        for (int i = employeeIndex; i < numEmployees - 1; i++) {
-            employees[i] = employees[i+1];
-        }
-        numEmployees--;
-        printf("Da xoa nhan vien co ma %d.\n", employeeID);
-    }
-}
-
-void displayEmployees() {
-    if (numEmployees == 0) {
-        printf("Khong co nhan vien de hien thi.\n");
-        return;
-    }
-    
-    printf("|%-10s|%-20s|%-20s|%-10s|\n", "Ma NV", "Ten", "Chuc vu", "Luong");
-    for (int i = 0; i < numEmployees; i++) {
-        printf("|%-10d|%-20s|%-20s|%-10d|\n", employees[i].employeeID, employees[i].name, employees[i].position, employees[i].salary);
-    }
-}
-
-void sortEmployees() {
-    struct Employee temp;
-    
-    for (int i = 0; i < numEmployees - 1; i++) {
-        for (int j = i + 1; j < numEmployees; j++) {
-            if (employees[i].employeeID > employees[j].employeeID) {
-                temp = employees[i];
-                employees[i] = employees[j];
-                employees[j] = temp;
+    for (i = 0; i < numStudents - 1; i++) {
+        for (j = i + 1; j < numStudents; j++) {
+            if (strcmp(students[i].name, students[j].name) > 0) {
+                temp = students[i];
+                students[i] = students[j];
+                students[j] = temp;
             }
         }
     }
-    
-    printf("Da sap xep nhan vien theo ma nhan vien.\n");
+}
+
+
+void sortStudentsByScore(struct Student students[], int numStudents) {
+    int i, j;
+    struct Student temp;
+
+    for (i = 0; i < numStudents - 1; i++) {
+        for (j = i + 1; j < numStudents; j++) {
+            if (students[i].score > students[j].score) {
+                temp = students[i];
+                students[i] = students[j];
+                students[j] = temp;
+            }
+        }
+    }
+}
+
+
+int searchStudentByName(struct Student students[], int numStudents, char searchName[]) {
+    int i;
+
+    for (i = 0; i < numStudents; i++) {
+        if (strcmp(students[i].name, searchName) == 0) {
+            return i; 
+        }
+    }
+
+    return -1; 
+}
+
+
+int searchStudentByID(struct Student students[], int numStudents, int searchID) {
+    int i;
+
+    for (i = 0; i < numStudents; i++) {
+        if (students[i].id == searchID) {
+            return i; 
+        }
+    }
+
+    return -1; 
 }
 
 int main() {
-    int choice;
+    struct Student students[MAX_STUDENTS];
+    int numStudents, i;
     
-    do {
-        printf("\nCac chuc nang:\n");
-        printf("1. Them nhan vien\n");
-        printf("2. Xoa nhan vien\n");
-        printf("3. Hien thi nhan vien\n");
-        printf("4. Sap xep nhan vien\n");
-        printf("5. Thoat\n");
-        printf("Nhap lua chon cua ban: ");
-        scanf("%d", &choice);
-        
-        switch (choice) {
-            case 1:
-                addEmployee();
-                break;
-            case 2:
-                removeEmployee();
-                break;
-            case 3:
-                displayEmployees();
-                break;
-            case 4:
-                sortEmployees();
-                break;
-            case 5:
-                printf("Tam biet!\n");
-                break;
-            default:
-                printf("Lua chon khong hop le.\n");
-        }
-    } while (choice != 5);
+    printf("Nhap so luong sinh vien: ");
+    scanf("%d", &numStudents);
+
     
-    return 0;
-}
+    for (i = 0; i < numStudents; i++) {
+        printf("Nhap thong tin cho sinh vien %d:\n", i + 1);
+        printf("ID: ");
+        scanf("%d", &students[i].id);
+        printf("Ten: ");
+        scanf("%s", students[i].name);
+        printf("Ðiem so: ");
+        scanf("%f", &students[i].score);
+    }
+
+    
+    sortStudentsByName(students, numStudents);
+    printf("\nDanh sach sinh vien sau khi sap xep theo ten:\n");
+    for (i = 0; i < numStudents; i++) {
+        printf("ID: %d, Ten: %s, Ðiem so: %.2f\n", students[i].id, students[i].name, students[i].score);
+    }
+
+    
+    char searchName[MAX_NAME_LENGTH];
+    printf("\nNhap ten sinh vien can tim: ");
+    scanf("%s", searchName);
+    int foundIndex = searchStudentByName(students, numStudents, searchName);
+    if (foundIndex != -1) {
+        printf("Sinh vien có ten %s duoc tim thay tai vi tri %d.\n", searchName, foundIndex + 1);
+    } else {
+        printf("Khong tim thay sinh vien co ten %s.\n", searchName);
+    }
+
+    
+    int searchID;
+    printf("\nNhap ID sinh vien can tim: ");
+    scanf("%d", &searchID);
+    foundIndex = searchStudentByID(students, numStudents, searchID);
+    if (foundIndex != -1) {
+        printf("Sinh vien có ID %d duoc tim thay tai vi tri %d.\n", searchID, foundIndex + 1);
+    } else {
+        printf("Không tim thay sinh vien co ID %d.\n", searchID);
+    }
+       return 0;
+   }
